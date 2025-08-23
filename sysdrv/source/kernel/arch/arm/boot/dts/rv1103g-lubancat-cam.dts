@@ -68,6 +68,22 @@
 		vin-supply = <&vcc5v0_sys>;
 	};
 
+	wifi_usb: wifi-usb {
+		compatible = "regulator-fixed";
+		regulator-name = "wifi_usb";
+		regulator-always-on;
+		enable-active-low;
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;	
+		gpio = <&gpio1 RK_PC3 GPIO_ACTIVE_LOW>;
+	};
+
+	wireless_wlan: wireless-wlan {
+		compatible = "wlan-platdata";
+		wifi_chip_type = "AIC8800DC";
+		status = "okay";
+	};
+
 	adc-keys {
 		compatible = "adc-keys";
 		io-channels = <&saradc 0>;
@@ -111,15 +127,15 @@
 
 			csi_dphy_input2: endpoint@2 {
 				reg = <2>;
-				remote-endpoint = <&sc431hai_out>;
+				remote-endpoint = <&sc4336_out>;
 				data-lanes = <1 2>;
 			};
 
-			csi_dphy_input3: endpoint@3 {
-				reg = <3>;
-				remote-endpoint = <&sc235hai_out>;
-				data-lanes = <1 2>;
-			};
+			// csi_dphy_input3: endpoint@3 {
+			// 	reg = <3>;
+			// 	remote-endpoint = <&sc235hai_out>;
+			// 	data-lanes = <1 2>;
+			// };
 			
 		};
 
@@ -146,49 +162,49 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c4m2_xfer>;
 
-	sc431hai: sc431hai@30 {
-		compatible = "smartsens,sc431hai";
+	sc4336: sc4336@30 {
+		compatible = "smartsens,sc4336";
 		status = "okay";
 		reg = <0x30>;
 		clocks = <&cru MCLK_REF_MIPI0>;
 		clock-names = "xvclk";
-		pwdn-gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_HIGH>;
+		pwdn-gpios = <&gpio1 RK_PC6 GPIO_ACTIVE_HIGH>;
+		// reset-gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&mipi_refclk_out0>;
 		rockchip,camera-module-index = <0>;
 		rockchip,camera-module-facing = "back";
-		rockchip,camera-module-name = "CMK-OT2115-PC1";
-		rockchip,camera-module-lens-name = "30IRC-F16";
+		rockchip,camera-module-name = "OT01";
+		rockchip,camera-module-lens-name = "40IRC_F16";
 		port {
-			sc431hai_out: endpoint {
+			sc4336_out: endpoint {
 				remote-endpoint = <&csi_dphy_input2>;
 				data-lanes = <1 2>;
 			};
 		};
 	};
 
-	sc235hai: sc235hai@30 {
-		compatible = "smartsens,sc235hai";
-		status = "okay";
-		reg = <0x30>;
-		clocks = <&cru MCLK_REF_MIPI0>;
-		clock-names = "xvclk";
-		pwdn-gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_HIGH>;
-		pinctrl-names = "rockchip,camera_default";
-		pinctrl-0 = <&mipi_refclk_out0>;
-		rockchip,camera-module-index = <0>;
-		rockchip,camera-module-facing = "back";
-		rockchip,camera-module-name = "CMK-OT2115-PC1";
-		rockchip,camera-module-lens-name = "30IRC-F16";
-		port {
-			sc235hai_out: endpoint {
-				remote-endpoint = <&csi_dphy_input3>;
-				data-lanes = <1 2>;
-			};
-		};
-	};
+	// sc235hai: sc235hai@30 {
+	// 	compatible = "smartsens,sc235hai";
+	// 	status = "okay";
+	// 	reg = <0x30>;
+	// 	clocks = <&cru MCLK_REF_MIPI0>;
+	// 	clock-names = "xvclk";
+	// 	pwdn-gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
+	// 	reset-gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_HIGH>;
+	// 	pinctrl-names = "rockchip,camera_default";
+	// 	pinctrl-0 = <&mipi_refclk_out0>;
+	// 	rockchip,camera-module-index = <0>;
+	// 	rockchip,camera-module-facing = "back";
+	// 	rockchip,camera-module-name = "CMK-OT2115-PC1";
+	// 	rockchip,camera-module-lens-name = "30IRC-F16";
+	// 	port {
+	// 		sc235hai_out: endpoint {
+	// 			remote-endpoint = <&csi_dphy_input3>;
+	// 			data-lanes = <1 2>;
+	// 		};
+	// 	};
+	// };
 };
 
 &i2s0_8ch {
@@ -323,7 +339,7 @@
 
 &usbdrd_dwc3 {
 	extcon = <&u2phy>;
-	dr_mode = "host";
+	dr_mode = "otg";
 	status = "okay";
 };
 
